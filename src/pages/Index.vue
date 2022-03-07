@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, Ref, ref } from 'vue'
 import MatchGroup from '../components/MatchGroup.vue'
 import type { UploadFile } from 'element-plus'
 import type { GroupConfig } from '../components/MatchGroup.vue'
@@ -44,6 +44,24 @@ function updateFiles(file: UploadFile, fileList: UploadFile[]) {
 }
 function removeFile(index: number) {
   files.value.splice(index, 1)
+}
+
+// 映射 url 参数
+if (location.search) {
+  function mapConfig(
+    params: URLSearchParams,
+    paramKey: string,
+    configKey: Ref<number[]>
+  ) {
+    const arr = params.get(paramKey)?.split('-').map(Number)
+    if (arr?.length === 2 && !arr.every(isNaN)) {
+      configKey.value = [arr[0], arr[1]]
+    }
+  }
+  const params = new URLSearchParams(location.search)
+  mapConfig(params, 'r', rangeR)
+  mapConfig(params, 'g', rangeG)
+  mapConfig(params, 'b', rangeB)
 }
 </script>
 
